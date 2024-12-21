@@ -1,0 +1,20 @@
+[project]
+name = "pytide6"
+description = "Sidekick library to PySide6 making it easier and more compact to use and providing set of higher level functions."
+readme = "README.md"
+dynamic = ["version"]
+requires-python = ">=3.13"
+dependencies = [
+    "pyside6==6.8.0.2",
+    "sprats @ git+https://github.com/priimak/sprats.git@v0.1.1"
+]
+
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-git-versioning"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
