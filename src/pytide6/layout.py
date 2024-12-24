@@ -103,7 +103,7 @@ class VBoxLayout(QVBoxLayout):
         The alignment is specified by alignment. The default alignment is 0, which means that the widget
         fills the entire cell.
         """
-        self.addWidget(widget, stretch = stretch, alignment = alignment)
+        super().addWidget(widget, stretch = stretch, alignment = alignment)
         return self
 
     @override
@@ -160,7 +160,7 @@ class HBoxLayout(QHBoxLayout):
         The alignment is specified by alignment. The default alignment is 0, which means that the widget
         fills the entire cell.
         """
-        self.addWidget(widget, stretch = stretch, alignment = alignment)
+        super().addWidget(widget, stretch = stretch, alignment = alignment)
         return self
 
     @override
