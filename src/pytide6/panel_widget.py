@@ -20,6 +20,10 @@ class Panel[T: QLayout](QWidget):
 
         self.addWidget = layout.addWidget
 
+    def addWidget(self, widget: QWidget) -> "Panel":
+        self.layout().addWidget(widget)
+        return self
+
     @override
     def layout(self) -> T:
         return super().layout()
@@ -39,8 +43,20 @@ class VBoxPanel(Panel[VBoxLayout]):
             widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         ))
 
-        self.addWidget = self.layout().addWidget
         self.addStretch = self.layout().addStretch
+
+    def addWidget(
+            self,
+            widget: QWidget,
+            stretch: int = 0,
+            alignment: Qt.AlignmentFlag = Qt.Alignment()
+    ) -> "VBoxPanel":
+        self.layout().addWidget(widget, stretch, alignment)
+        return self
+
+    def addStretch(self, stretch: int = 0) -> "VBoxPanel":
+        self.layout().addStretch(stretch)
+        return self
 
 
 class HBoxPanel(Panel[HBoxLayout]):
@@ -57,5 +73,15 @@ class HBoxPanel(Panel[HBoxLayout]):
             widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         ))
 
-        self.addWidget = self.layout().addWidget
-        self.addStretch = self.layout().addStretch
+    def addWidget(
+            self,
+            widget: QWidget,
+            stretch: int = 0,
+            alignment: Qt.AlignmentFlag = Qt.Alignment()
+    ) -> "HBoxPanel":
+        self.layout().addWidget(widget, stretch, alignment)
+        return self
+
+    def addStretch(self, stretch: int = 0) -> "HBoxPanel":
+        self.layout().addStretch(stretch)
+        return self
