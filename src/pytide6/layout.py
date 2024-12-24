@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, override
 
 from PySide6.QtCore import QMargins, Qt
 from PySide6.QtWidgets import QLayout, QWidget, QVBoxLayout
@@ -82,3 +82,13 @@ class VBoxLayout(QVBoxLayout):
                 self.addWidget(widget[0], stretch = widget[1])
             else:
                 self.addWidget(widget[0], stretch = widget[1], alignment = widget[2])
+
+    @override
+    def addWidget(
+            self,
+            widget: QWidget,
+            stretch: int = 0,
+            alignment: Qt.AlignmentFlag = Qt.Alignment()
+    ) -> "VBoxLayout":
+        self.addWidget(widget, stretch = stretch, alignment = alignment)
+        return self
