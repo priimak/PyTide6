@@ -1,4 +1,5 @@
 from .geometry import set_geometry
+from .labels import Label, RichTextLabel
 from .layout import Layout, HBoxLayout, VBoxLayout
 from .open_file_protocol import FileOpener
 from .panel_widget import Panel, HBoxPanel, VBoxPanel
