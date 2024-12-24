@@ -37,7 +37,7 @@ def update_last_opened_files_menu(
     max_num_of_recorded_last_opened_files = app_persistence.config.get_value("max_last_opened_files", int)
     if len(last_opened_files) > max_num_of_recorded_last_opened_files:
         last_opened_files = last_opened_files[0:max_num_of_recorded_last_opened_files]
-    app_persistence.state.save_value("last_opened_files", last_opened_files)
+    app_persistence.state.set_value("last_opened_files", last_opened_files)
 
     # update sub-menu "Prev Opened"
     init_last_opened_menu(app_persistence, recently_opened_menu, file_opener)
