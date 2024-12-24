@@ -18,6 +18,8 @@ class Panel[T: QLayout](QWidget):
                 else:
                     layout.addWidget(w)
 
+        self.addWidget = layout.addWidget
+
     @override
     def layout(self) -> T:
         return super().layout()
@@ -37,6 +39,9 @@ class VBoxPanel(Panel[VBoxLayout]):
             widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         ))
 
+        self.addWidget = self.layout().addWidget
+        self.addStretch = self.layout().addStretch
+
 
 class HBoxPanel(Panel[HBoxLayout]):
     def __init__(
@@ -51,3 +56,6 @@ class HBoxPanel(Panel[HBoxLayout]):
         super().__init__(HBoxLayout(
             widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         ))
+
+        self.addWidget = self.layout().addWidget
+        self.addStretch = self.layout().addStretch
