@@ -1,5 +1,6 @@
 from .geometry import set_geometry
-from .layout import Layout
+from .layout import Layout, HBoxLayout, VBoxLayout
 from .open_file_protocol import FileOpener
-from .panel_widget import Panel
+from .panel_widget import Panel, HBoxPanel, VBoxPanel
 from .recenetly_opened_files import init_last_opened_menu, update_last_opened_files_menu
+from .windows import MainWindow
