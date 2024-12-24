@@ -1,7 +1,7 @@
 from typing import Type
 
-from PySide6.QtCore import QMargins
-from PySide6.QtWidgets import QLayout, QWidget
+from PySide6.QtCore import QMargins, Qt
+from PySide6.QtWidgets import QLayout, QWidget, QVBoxLayout
 
 
 def asList[T](src: list[T] | None) -> list[T]:
@@ -9,7 +9,7 @@ def asList[T](src: list[T] | None) -> list[T]:
 
 
 def Layout[T: QLayout](
-        layout_class: Type[T],
+        layout_class: Type[T] | T,
         widgets: list[QWidget] | None = None,
         *,
         spacing: int | None = None,
@@ -34,7 +34,7 @@ def Layout[T: QLayout](
             all layouts are enabled.
     :return:
     """
-    layout = layout_class()
+    layout = layout_class if isinstance(layout_class, QLayout) else layout_class()
 
     if spacing is not None:
         layout.setSpacing(spacing)
@@ -57,3 +57,28 @@ def Layout[T: QLayout](
         layout.addWidget(widget)
 
     return layout
+
+
+class VBoxLayout(QVBoxLayout):
+    def __init__(self,
+                 widgets: list[QWidget | tuple[QWidget, int] | tuple[QWidget, Qt.AlignmentFlag] | tuple[
+                     QWidget, int, Qt.AlignmentFlag]] | None = None,
+                 *,
+                 spacing: int | None = None,
+                 margins: QMargins | tuple[int, int, int, int] | int | None = None,
+                 sizeConstraint: QLayout.SizeConstraint | None = None,
+                 enabled: bool | None = None,
+                 ):
+        super().__init__()
+        Layout(
+            self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
+        )
+        for widget in asList(widgets):
+            if isinstance(widget, QWidget):
+                self.addWidget(widget)
+            elif isinstance(widget[1], Qt.AlignmentFlag):
+                self.addWidget(widget[0], alignment = widget[1])
+            elif isinstance(widget[1], int):
+                self.addWidget(widget[0], stretch = widget[1])
+            else:
+                self.addWidget(widget[0], stretch = widget[1], alignment = widget[2])
