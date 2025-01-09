@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QLabel, QLineEdit
 
-from pytide6 import Panel, HBoxLayout
+from pytide6.layout import HBoxLayout
+from pytide6.panel_widget import Panel
 
 
 class LineTextInput(Panel[HBoxLayout]):
