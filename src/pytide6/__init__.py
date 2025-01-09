@@ -1,6 +1,7 @@
 from .check_box import CheckBox
 from .dialogs import Dialog
 from .geometry import set_geometry
+from .inputs import LineTextInput
 from .labels import Label, RichTextLabel
 from .layout import Layout, HBoxLayout, VBoxLayout
 from .open_file_protocol import FileOpener
