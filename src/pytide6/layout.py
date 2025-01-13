@@ -3,6 +3,8 @@ from typing import Type, override
 from PySide6.QtCore import QMargins, Qt
 from PySide6.QtWidgets import QLayout, QWidget, QVBoxLayout, QSpacerItem, QHBoxLayout
 
+from pytide6.widget_wrapper import W
+
 
 def asList[T](src: list[T] | None) -> list[T]:
     return [] if src is None else src
@@ -61,8 +63,7 @@ def Layout[T: QLayout](
 
 class VBoxLayout(QVBoxLayout):
     def __init__(self,
-                 widgets: list[QWidget | tuple[QWidget, int] | tuple[QWidget, Qt.AlignmentFlag] |
-                               tuple[QWidget, int, Qt.AlignmentFlag] | Type[QSpacerItem]] | None = None,
+                 widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
                  *,
                  spacing: int | None = None,
                  margins: QMargins | tuple[int, int, int, int] | int | None = None,
@@ -74,16 +75,13 @@ class VBoxLayout(QVBoxLayout):
             self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         )
         for widget in asList(widgets):
-            if isinstance(widget, QWidget):
-                self.addWidget(widget)
-            elif widget is QSpacerItem:
-                self.addStretch(1)
-            elif isinstance(widget[1], Qt.AlignmentFlag):
-                self.addWidget(widget[0], alignment = widget[1])
-            elif isinstance(widget[1], int):
-                self.addWidget(widget[0], stretch = widget[1])
-            else:
-                self.addWidget(widget[0], stretch = widget[1], alignment = widget[2])
+            match widget:
+                case QWidget():
+                    self.addWidget(widget)
+                case QSpacerItem():
+                    self.addStretch(1)
+                case W(widget, stretch, alignment):
+                    self.addWidget(widget, stretch, alignment)
 
     @override
     def addWidget(
@@ -118,8 +116,7 @@ class VBoxLayout(QVBoxLayout):
 
 class HBoxLayout(QHBoxLayout):
     def __init__(self,
-                 widgets: list[QWidget | tuple[QWidget, int] | tuple[QWidget, Qt.AlignmentFlag] |
-                               tuple[QWidget, int, Qt.AlignmentFlag] | Type[QSpacerItem]] | None = None,
+                 widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
                  *,
                  spacing: int | None = None,
                  margins: QMargins | tuple[int, int, int, int] | int | None = None,
@@ -131,16 +128,13 @@ class HBoxLayout(QHBoxLayout):
             self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         )
         for widget in asList(widgets):
-            if isinstance(widget, QWidget):
-                self.addWidget(widget)
-            elif widget is QSpacerItem:
-                self.addStretch(1)
-            elif isinstance(widget[1], Qt.AlignmentFlag):
-                self.addWidget(widget[0], alignment = widget[1])
-            elif isinstance(widget[1], int):
-                self.addWidget(widget[0], stretch = widget[1])
-            else:
-                self.addWidget(widget[0], stretch = widget[1], alignment = widget[2])
+            match widget:
+                case QWidget():
+                    self.addWidget(widget)
+                case QSpacerItem():
+                    self.addStretch(1)
+                case W(widget, stretch, alignment):
+                    self.addWidget(widget, stretch, alignment)
 
     @override
     def addWidget(

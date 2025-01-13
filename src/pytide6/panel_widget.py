@@ -4,17 +4,11 @@ from PySide6.QtCore import QMargins, Qt
 from PySide6.QtWidgets import QLayout, QWidget, QSpacerItem, QBoxLayout
 
 from pytide6.layout import VBoxLayout, HBoxLayout
-
-
-class W:
-    def __init__(self, widget: QWidget, stretch: int = 0, alignment: Qt.AlignmentFlag = 0):
-        self.widget = widget
-        self.stretch = stretch
-        self.alignment = alignment
+from pytide6.widget_wrapper import W
 
 
 class Panel[T: QLayout](QWidget):
-    def __init__(self, layout: T, widgets: list[QWidget | Type[QSpacerItem]] | None = None):
+    def __init__(self, layout: T, widgets: list[QWidget | W | Type[QSpacerItem]] | None = None):
         super().__init__()
         self.setLayout(layout)
 
@@ -35,7 +29,7 @@ class Panel[T: QLayout](QWidget):
 
 
 class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
-    def addWidgets(self, *widgets: QWidget | W) -> Self:
+    def addWidgets(self, *widgets: QWidget | W | Type[QSpacerItem]) -> Self:
         """
         Adds several widgets at the same time. Passed argument can be an instance of
         QWidget or a widget wrapper W(...) which allows to pass values of stretch and alignment
@@ -44,6 +38,8 @@ class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
             match w:
                 case QWidget():
                     self.addWidget(w)
+                case QSpacerItem():
+                    self.layout().addStretch(1)
                 case W(widget, stretch, alignment):
                     self.addWidget(widget, stretch, alignment)
         return self
@@ -82,8 +78,7 @@ class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
 class VBoxPanel(QBoxLayoutPanelRoot[VBoxLayout]):
     def __init__(
             self,
-            widgets: list[QWidget | tuple[QWidget, int] | tuple[QWidget, Qt.AlignmentFlag] |
-                          tuple[QWidget, int, Qt.AlignmentFlag] | Type[QSpacerItem]] | None = None,
+            widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
             *,
             spacing: int | None = None,
             margins: QMargins | tuple[int, int, int, int] | int | None = None,
@@ -97,8 +92,7 @@ class VBoxPanel(QBoxLayoutPanelRoot[VBoxLayout]):
 class HBoxPanel(QBoxLayoutPanelRoot[HBoxLayout]):
     def __init__(
             self,
-            widgets: list[QWidget | tuple[QWidget, int] | tuple[QWidget, Qt.AlignmentFlag] |
-                          tuple[QWidget, int, Qt.AlignmentFlag] | Type[QSpacerItem]] | None = None,
+            widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
             *,
             spacing: int | None = None,
             margins: QMargins | tuple[int, int, int, int] | int | None = None,
