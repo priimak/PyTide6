@@ -1,4 +1,4 @@
-from typing import Type, override, Self
+from typing import Type, override, Self, DefaultDict
 
 from PySide6.QtCore import QMargins, Qt
 from PySide6.QtWidgets import QLayout, QWidget, QSpacerItem, QBoxLayout
@@ -50,7 +50,7 @@ class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
             self,
             widget: T,
             stretch: int = 0,
-            alignment: Qt.AlignmentFlag = 0
+            alignment: Qt.AlignmentFlag | None = None
     ) -> T:
         """
         Adds widget to the end of this box layout, with a stretch factor of `stretch` and alignment `alignment`.
@@ -63,7 +63,10 @@ class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
         The alignment is specified by alignment. The default alignment is 0, which means that the widget
         fills the entire cell.
         """
-        self.layout().addWidget(widget, stretch, alignment)
+        if alignment is None:
+            self.layout().addWidget(widget, stretch)
+        else:
+            self.layout().addWidget(widget, stretch, alignment)
         return widget
 
     def addStretch(self, stretch: int = 0) -> Self:
