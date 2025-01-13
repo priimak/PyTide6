@@ -90,7 +90,7 @@ class VBoxLayout(QVBoxLayout):
             self,
             widget: QWidget,
             stretch: int = 0,
-            alignment: Qt.AlignmentFlag = Qt.Alignment()
+            alignment: Qt.AlignmentFlag = 0
     ) -> "VBoxLayout":
         """
         Adds widget to the end of this box layout, with a stretch factor of `stretch` and alignment `alignment`.
@@ -147,7 +147,7 @@ class HBoxLayout(QHBoxLayout):
             self,
             widget: QWidget,
             stretch: int = 0,
-            alignment: Qt.AlignmentFlag = Qt.Alignment()
+            alignment: Qt.AlignmentFlag = 0
     ) -> "HBoxLayout":
         """
         Adds widget to the end of this box layout, with a stretch factor of `stretch` and alignment `alignment`.

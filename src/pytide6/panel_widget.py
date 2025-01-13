@@ -1,9 +1,16 @@
-from typing import Type, override
+from typing import Type, override, Self
 
 from PySide6.QtCore import QMargins, Qt
-from PySide6.QtWidgets import QLayout, QWidget, QSpacerItem
+from PySide6.QtWidgets import QLayout, QWidget, QSpacerItem, QBoxLayout
 
 from pytide6.layout import VBoxLayout, HBoxLayout
+
+
+class W:
+    def __init__(self, widget: QWidget, stretch: int = 0, alignment: Qt.AlignmentFlag = 0):
+        self.widget = widget
+        self.stretch = stretch
+        self.alignment = alignment
 
 
 class Panel[T: QLayout](QWidget):
@@ -27,7 +34,49 @@ class Panel[T: QLayout](QWidget):
         return super().layout()
 
 
-class VBoxPanel(Panel[VBoxLayout]):
+class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
+    def addWidgets(self, *widgets: QWidget | W) -> None:
+        """ 
+        Adds several widgets at the same time. Passed argument can be an instance of 
+        QWidget or a widget wrapper W(...) which allows to pass values of stretch and alignment 
+        """
+        for w in widgets:
+            match w:
+                case QWidget():
+                    self.addWidget(w)
+                case W(widget, stretch, alignment):
+                    self.addWidget(widget, stretch, alignment)
+
+    def addWidget[T: QWidget](
+            self,
+            widget: T,
+            stretch: int = 0,
+            alignment: Qt.AlignmentFlag = 0
+    ) -> T:
+        """
+        Adds widget to the end of this box layout, with a stretch factor of `stretch` and alignment `alignment`.
+        The stretch factor applies only in the direction of the `QBoxLayout`, and is relative to the other boxes
+        and widgets in this QBoxLayout . Widgets and boxes with higher stretch factors grow more.
+
+        If the stretch factor is 0 and nothing else in the `QBoxLayout` has a stretch factor greater than zero,
+        the space is distributed according to the `QWidget::sizePolicy()` of each widget that’s involved.
+
+        The alignment is specified by alignment. The default alignment is 0, which means that the widget
+        fills the entire cell.
+        """
+        self.layout().addWidget(widget, stretch, alignment)
+        return widget
+
+    def addStretch(self, stretch: int = 0) -> Self:
+        """
+        Adds a stretchable space (a QSpacerItem ) with zero minimum size and stretch
+        factor `stretch` to the end of this box layout.
+        """
+        self.layout().addStretch(stretch)
+        return self
+
+
+class VBoxPanel(QBoxLayoutPanelRoot[VBoxLayout]):
     def __init__(
             self,
             widgets: list[QWidget | tuple[QWidget, int] | tuple[QWidget, Qt.AlignmentFlag] |
@@ -41,36 +90,8 @@ class VBoxPanel(Panel[VBoxLayout]):
             widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         ))
 
-    def addWidget(
-            self,
-            widget: QWidget,
-            stretch: int = 0,
-            alignment: Qt.AlignmentFlag = Qt.Alignment()
-    ) -> "VBoxPanel":
-        """
-        Adds widget to the end of this box layout, with a stretch factor of `stretch` and alignment `alignment`.
-        The stretch factor applies only in the direction of the `QBoxLayout`, and is relative to the other boxes
-        and widgets in this QBoxLayout . Widgets and boxes with higher stretch factors grow more.
 
-        If the stretch factor is 0 and nothing else in the `QBoxLayout` has a stretch factor greater than zero,
-        the space is distributed according to the `QWidget::sizePolicy()` of each widget that’s involved.
-
-        The alignment is specified by alignment. The default alignment is 0, which means that the widget
-        fills the entire cell.
-        """
-        self.layout().addWidget(widget, stretch, alignment)
-        return self
-
-    def addStretch(self, stretch: int = 0) -> "VBoxPanel":
-        """
-        Adds a stretchable space (a QSpacerItem ) with zero minimum size and stretch
-        factor `stretch` to the end of this box layout.
-        """
-        self.layout().addStretch(stretch)
-        return self
-
-
-class HBoxPanel(Panel[HBoxLayout]):
+class HBoxPanel(QBoxLayoutPanelRoot[HBoxLayout]):
     def __init__(
             self,
             widgets: list[QWidget | tuple[QWidget, int] | tuple[QWidget, Qt.AlignmentFlag] |
@@ -83,31 +104,3 @@ class HBoxPanel(Panel[HBoxLayout]):
         super().__init__(HBoxLayout(
             widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         ))
-
-    def addWidget(
-            self,
-            widget: QWidget,
-            stretch: int = 0,
-            alignment: Qt.AlignmentFlag = Qt.Alignment()
-    ) -> "HBoxPanel":
-        """
-        Adds widget to the end of this box layout, with a stretch factor of `stretch` and alignment `alignment`.
-        The stretch factor applies only in the direction of the `QBoxLayout`, and is relative to the other boxes
-        and widgets in this QBoxLayout . Widgets and boxes with higher stretch factors grow more.
-
-        If the stretch factor is 0 and nothing else in the `QBoxLayout` has a stretch factor greater than zero,
-        the space is distributed according to the `QWidget::sizePolicy()` of each widget that’s involved.
-
-        The alignment is specified by alignment. The default alignment is 0, which means that the widget
-        fills the entire cell.
-        """
-        self.layout().addWidget(widget, stretch, alignment)
-        return self
-
-    def addStretch(self, stretch: int = 0) -> "HBoxPanel":
-        """
-        Adds a stretchable space (a QSpacerItem ) with zero minimum size and stretch
-        factor `stretch` to the end of this box layout.
-        """
-        self.layout().addStretch(stretch)
-        return self
