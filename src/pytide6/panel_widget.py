@@ -36,9 +36,9 @@ class Panel[T: QLayout](QWidget):
 
 class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
     def addWidgets(self, *widgets: QWidget | W) -> Self:
-        """ 
-        Adds several widgets at the same time. Passed argument can be an instance of 
-        QWidget or a widget wrapper W(...) which allows to pass values of stretch and alignment 
+        """
+        Adds several widgets at the same time. Passed argument can be an instance of
+        QWidget or a widget wrapper W(...) which allows to pass values of stretch and alignment
         """
         for w in widgets:
             match w:
@@ -47,6 +47,8 @@ class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
                 case W(widget, stretch, alignment):
                     self.addWidget(widget, stretch, alignment)
         return self
+
+    withWidgets = addWidgets
 
     def addWidget[T: QWidget](
             self,
