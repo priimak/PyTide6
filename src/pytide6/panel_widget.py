@@ -1,9 +1,9 @@
-from typing import Type, override, Self, DefaultDict
+from typing import Type, override, Self
 
 from PySide6.QtCore import QMargins, Qt
 from PySide6.QtWidgets import QLayout, QWidget, QSpacerItem, QBoxLayout
 
-from pytide6.layout import VBoxLayout, HBoxLayout
+from pytide6.layout import VBoxLayout, HBoxLayout, addWidgets
 from pytide6.widget_wrapper import W
 
 
@@ -34,14 +34,7 @@ class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
         Adds several widgets at the same time. Passed argument can be an instance of
         QWidget or a widget wrapper W(...) which allows to pass values of stretch and alignment
         """
-        for w in widgets:
-            match w:
-                case QWidget():
-                    self.addWidget(w)
-                case QSpacerItem():
-                    self.layout().addStretch(1)
-                case W(widget, stretch, alignment):
-                    self.addWidget(widget, stretch, alignment)
+        addWidgets(self.layout(), list(widgets))
         return self
 
     withWidgets = addWidgets

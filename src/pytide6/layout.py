@@ -1,7 +1,7 @@
 from typing import Type
 
 from PySide6.QtCore import QMargins
-from PySide6.QtWidgets import QLayout, QWidget, QVBoxLayout, QSpacerItem, QHBoxLayout
+from PySide6.QtWidgets import QLayout, QWidget, QVBoxLayout, QSpacerItem, QHBoxLayout, QBoxLayout
 
 from pytide6.widget_wrapper import W
 
@@ -61,6 +61,19 @@ def Layout[T: QLayout](
     return layout
 
 
+def addWidgets(layout: QBoxLayout, widgets: list[QWidget | W | Type[QSpacerItem]] | None = None) -> None:
+    for widget in asList(widgets):
+        match widget:
+            case QWidget():
+                layout.addWidget(widget)
+            case QSpacerItem():
+                layout.addStretch(1)
+            case W(widget, stretch, None):
+                layout.addWidget(widget, stretch)
+            case W(widget, stretch, alignment):
+                layout.addWidget(widget, stretch, alignment)
+
+
 class VBoxLayout(QVBoxLayout):
     def __init__(self,
                  widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
@@ -74,14 +87,7 @@ class VBoxLayout(QVBoxLayout):
         Layout(
             self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         )
-        for widget in asList(widgets):
-            match widget:
-                case QWidget():
-                    self.addWidget(widget)
-                case QSpacerItem():
-                    self.addStretch(1)
-                case W(widget, stretch, alignment):
-                    self.addWidget(widget, stretch, alignment)
+        addWidgets(self, widgets)
 
 
 class HBoxLayout(QHBoxLayout):
@@ -97,11 +103,4 @@ class HBoxLayout(QHBoxLayout):
         Layout(
             self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         )
-        for widget in asList(widgets):
-            match widget:
-                case QWidget():
-                    self.addWidget(widget)
-                case QSpacerItem():
-                    self.addStretch(1)
-                case W(widget, stretch, alignment):
-                    self.addWidget(widget, stretch, alignment)
+        addWidgets(self, widgets)
