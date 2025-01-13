@@ -12,7 +12,8 @@ class PushButton(QPushButton):
                  on_clicked: Callable[[], Any] | None = None,
                  auto_default: bool | None = None,
                  style_sheet: str | None = None,
-                 cursor: PySide6.QtGui.QCursor | PySide6.QtCore.Qt.CursorShape | PySide6.QtGui.QPixmap | None = None):
+                 cursor: PySide6.QtGui.QCursor | PySide6.QtCore.Qt.CursorShape | PySide6.QtGui.QPixmap | None = None,
+                 enabled: bool = True):
         super().__init__(text, parent)
         if on_clicked is not None:
             self.clicked.connect(on_clicked)
@@ -25,3 +26,5 @@ class PushButton(QPushButton):
 
         if cursor is not None:
             self.setCursor(cursor)
+
+        self.setEnabled(enabled)
