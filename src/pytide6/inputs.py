@@ -1,5 +1,6 @@
 from collections.abc import Callable
 
+from PySide6.QtGui import QDoubleValidator
 from PySide6.QtWidgets import QLabel, QLineEdit
 
 from pytide6.layout import HBoxLayout
@@ -22,3 +23,10 @@ class LineTextInput(Panel[HBoxLayout]):
 
     def text(self) -> str:
         return self._input.text()
+
+
+class FloatTextInput(LineTextInput):
+    def __init__(self, label: str | None, text: str = "", on_text_change: Callable[[str], None] | None = None):
+        super().__init__(label, text, on_text_change)
+
+        self._input.setValidator(QDoubleValidator())
