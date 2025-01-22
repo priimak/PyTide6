@@ -24,6 +24,9 @@ class LineTextInput(Panel[HBoxLayout]):
     def text(self) -> str:
         return self._input.text()
 
+    def setText(self, text: str) -> None:
+        self._input.setText(text)
+
 
 class FloatTextInput(LineTextInput):
     def __init__(self, label: str | None, text: str = "", on_text_change: Callable[[str], None] | None = None):
