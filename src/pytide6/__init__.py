@@ -1,4 +1,5 @@
 from .check_box import CheckBox
+from .combo_box import ComboBox
 from .dialogs import Dialog
 from .geometry import set_geometry
 from .inputs import LineTextInput
