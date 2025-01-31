@@ -8,7 +8,12 @@ from pytide6.panel_widget import Panel
 
 
 class LineTextInput(Panel[HBoxLayout]):
-    def __init__(self, label: str | None, text: str = "", on_text_change: Callable[[str], None] | None = None):
+    def __init__(self,
+                 label: str | None,
+                 text: str = "",
+                 *,
+                 on_text_change: Callable[[str], None] | None = None,
+                 min_width: int | None = None):
         super().__init__(HBoxLayout())
 
         if label is not None:
@@ -18,6 +23,9 @@ class LineTextInput(Panel[HBoxLayout]):
 
         if on_text_change is not None:
             self._input.textChanged.connect(on_text_change)
+
+        if min_width is not None:
+            self._input.setMinimumWidth(min_width)
 
         self.addWidget(self._input)
 
