@@ -76,7 +76,7 @@ def addWidgets(
             case W(widget, stretch, alignment):
                 layout.addWidget(widget, stretch, alignment)
             case list():
-                addWidgets(widget)
+                addWidgets(layout, widget)
 
 
 class VBoxLayout(QVBoxLayout):
