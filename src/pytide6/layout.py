@@ -61,7 +61,10 @@ def Layout[T: QLayout](
     return layout
 
 
-def addWidgets(layout: QBoxLayout, widgets: list[QWidget | W | Type[QSpacerItem]] | None = None) -> None:
+def addWidgets(
+        layout: QBoxLayout,
+        widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None
+) -> None:
     for widget in asList(widgets):
         match widget:
             case QWidget():
@@ -72,11 +75,13 @@ def addWidgets(layout: QBoxLayout, widgets: list[QWidget | W | Type[QSpacerItem]
                 layout.addWidget(widget, stretch)
             case W(widget, stretch, alignment):
                 layout.addWidget(widget, stretch, alignment)
+            case list():
+                addWidgets(widget)
 
 
 class VBoxLayout(QVBoxLayout):
     def __init__(self,
-                 widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
+                 widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None,
                  *,
                  spacing: int | None = None,
                  margins: QMargins | tuple[int, int, int, int] | int | None = None,
@@ -92,7 +97,7 @@ class VBoxLayout(QVBoxLayout):
 
 class HBoxLayout(QHBoxLayout):
     def __init__(self,
-                 widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
+                 widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None,
                  *,
                  spacing: int | None = None,
                  margins: QMargins | tuple[int, int, int, int] | int | None = None,
