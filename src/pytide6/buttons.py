@@ -13,7 +13,8 @@ class PushButton(QPushButton):
                  auto_default: bool | None = None,
                  style_sheet: str | None = None,
                  cursor: PySide6.QtGui.QCursor | PySide6.QtCore.Qt.CursorShape | PySide6.QtGui.QPixmap | None = None,
-                 enabled: bool = True):
+                 enabled: bool = True,
+                 tool_tip: str | None = None):
         super().__init__(text, parent)
         if on_clicked is not None:
             self.clicked.connect(on_clicked)
@@ -26,5 +27,8 @@ class PushButton(QPushButton):
 
         if cursor is not None:
             self.setCursor(cursor)
+
+        if tool_tip is not None:
+            self.setToolTip(tool_tip)
 
         self.setEnabled(enabled)
