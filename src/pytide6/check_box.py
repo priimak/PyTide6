@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QCheckBox
 
 class CheckBox(QCheckBox):
     def __init__(self,
-                 text: str,
+                 text: str | None = None,
                  parent = None,
                  *,
                  checked: bool = False,
