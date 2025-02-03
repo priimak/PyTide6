@@ -1,6 +1,6 @@
 from collections.abc import Callable
 
-from PySide6.QtGui import QDoubleValidator
+from PySide6.QtGui import QDoubleValidator, QValidator
 from PySide6.QtWidgets import QLabel, QLineEdit
 
 from pytide6.layout import HBoxLayout
@@ -13,7 +13,8 @@ class LineTextInput(Panel[HBoxLayout]):
                  text: str = "",
                  *,
                  on_text_change: Callable[[str], None] | None = None,
-                 min_width: int | None = None):
+                 min_width: int | None = None,
+                 validator: QValidator | None = None):
         super().__init__(HBoxLayout())
 
         if label is not None:
@@ -27,6 +28,9 @@ class LineTextInput(Panel[HBoxLayout]):
         if min_width is not None:
             self._input.setMinimumWidth(min_width)
 
+        if validator is not None:
+            self._input.setValidator(validator)
+
         self.addWidget(self._input)
 
     def text(self) -> str:
@@ -37,18 +41,26 @@ class LineTextInput(Panel[HBoxLayout]):
 
 
 class FloatTextInput(LineTextInput):
-    def __init__(self, label: str | None, text: str = "", on_text_change: Callable[[str], None] | None = None):
-        super().__init__(label, text, on_text_change)
-
-        self._input.setValidator(QDoubleValidator())
+    def __init__(
+            self,
+            label: str | None,
+            text: str = "",
+            on_text_change: Callable[[str], None] | None = None,
+            min_width: int | None = None):
+        super().__init__(
+            label, text, on_text_change = on_text_change, min_width = min_width, validator = QDoubleValidator()
+        )
 
 
 class LineEdit(QLineEdit):
     def __init__(
             self,
             text: str = "",
+            *,
             on_text_change: Callable[[str], None] | None = None,
-            min_width: int | None = None
+            min_width: int | None = None,
+            max_width: int | None = None,
+            validator: QValidator | None = None
     ):
         super().__init__(text)
 
@@ -57,3 +69,9 @@ class LineEdit(QLineEdit):
 
         if min_width is not None:
             self.setMinimumWidth(min_width)
+
+        if max_width is not None:
+            self.setMaximumWidth(max_width)
+
+        if validator is not None:
+            self.setValidator(validator)
