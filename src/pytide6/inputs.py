@@ -44,8 +44,16 @@ class FloatTextInput(LineTextInput):
 
 
 class LineEdit(QLineEdit):
-    def __init__(self, text: str = "", on_text_change: Callable[[str], None] | None = None):
+    def __init__(
+            self,
+            text: str = "",
+            on_text_change: Callable[[str], None] | None = None,
+            min_width: int | None = None
+    ):
         super().__init__(text)
 
         if on_text_change is not None:
             self.textChanged.connect(on_text_change)
+
+        if min_width is not None:
+            self.setMinimumWidth(min_width)
