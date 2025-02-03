@@ -41,3 +41,11 @@ class FloatTextInput(LineTextInput):
         super().__init__(label, text, on_text_change)
 
         self._input.setValidator(QDoubleValidator())
+
+
+class LineEdit(QLineEdit):
+    def __init__(self, text: str = "", on_text_change: Callable[[str], None] | None = None):
+        super().__init__(text)
+
+        if on_text_change is not None:
+            self.textChanged.connect(on_text_change)
