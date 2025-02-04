@@ -60,7 +60,8 @@ class LineEdit(QLineEdit):
             on_text_change: Callable[[str], None] | None = None,
             min_width: int | None = None,
             max_width: int | None = None,
-            validator: QValidator | None = None
+            validator: QValidator | None = None,
+            tooltip: str | None = None,
     ):
         super().__init__(text)
 
@@ -75,3 +76,6 @@ class LineEdit(QLineEdit):
 
         if validator is not None:
             self.setValidator(validator)
+
+        if tooltip is not None:
+            self.setToolTip(tooltip)
