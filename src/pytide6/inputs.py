@@ -1,5 +1,7 @@
 from collections.abc import Callable
+from typing import Self
 
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QDoubleValidator, QValidator
 from PySide6.QtWidgets import QLabel, QLineEdit
 
@@ -62,6 +64,7 @@ class LineEdit(QLineEdit):
             max_width: int | None = None,
             validator: QValidator | None = None,
             tooltip: str | None = None,
+            alignment: Qt.AlignmentFlag | None = None
     ):
         super().__init__(text)
 
@@ -79,3 +82,30 @@ class LineEdit(QLineEdit):
 
         if tooltip is not None:
             self.setToolTip(tooltip)
+
+        if alignment is not None:
+            self.setAlignment(alignment)
+
+    def withAlignment(self, flag: Qt.AlignmentFlag) -> Self:
+        self.setAlignment(flag)
+        return self
+
+    def withOnTextChange(self, f: Callable[[str], None]) -> Self:
+        self.textChanged.connect(f)
+        return self
+
+    def withMinWidth(self, min_width: int) -> Self:
+        self.setMinimumWidth(min_width)
+        return self
+
+    def withMaxWidth(self, max_width: int) -> Self:
+        self.setMaximumWidth(max_width)
+        return self
+
+    def withValidator(self, validator: QValidator) -> Self:
+        self.setValidator(validator)
+        return self
+
+    def withToolTip(self, tooltip: str) -> Self:
+        self.setToolTip(tooltip)
+        return self
