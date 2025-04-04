@@ -6,7 +6,7 @@ dynamic = ["version"]
 requires-python = ">=3.13"
 dependencies = [
     "pyside6==6.8.0.2",
-    "sprats @ git+https://github.com/priimak/sprats.git@v0.2.0"
+    "sprats @ git+https://github.com/priimak/sprats.git@master"
 ]
 
 [build-system]
