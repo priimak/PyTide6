@@ -10,7 +10,8 @@ class ComboBox(QComboBox):
                  min_width: int | None = None,
                  items: list[str] | None = None,
                  current_selection: int | str | None = None,
-                 on_text_change: Callable[[str], None] | None = None) -> None:
+                 on_text_change: Callable[[str], None] | None = None,
+                 on_focus: Callable[[], None] = lambda: None) -> None:
         super(ComboBox, self).__init__(parent)
 
         if min_width is not None:
@@ -25,5 +26,11 @@ class ComboBox(QComboBox):
             case int():
                 self.setCurrentIndex(current_selection)
 
+        self.on_focus = on_focus
+
         if on_text_change is not None:
             self.currentTextChanged.connect(on_text_change)
+
+    def focusInEvent(self, e):
+        super().focusInEvent(e)
+        self.on_focus()
