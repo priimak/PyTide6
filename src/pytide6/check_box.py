@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QCheckBox
 class CheckBox(QCheckBox):
     def __init__(self,
                  text: str | None = None,
-                 parent = None,
+                 parent=None,
                  *,
                  checked: bool = False,
                  on_change: Callable[[bool], None] = lambda _: None):
@@ -14,7 +14,4 @@ class CheckBox(QCheckBox):
         self.__on_change = on_change
         self.setChecked(checked)
 
-        self.clicked.connect(self._dispatch)
-
-    def _dispatch(self):
-        self.__on_change(self.isChecked())
+        self.toggled.connect(on_change)
