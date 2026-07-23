@@ -1,6 +1,8 @@
 from typing import Type, override, Self
 
+import PySide6
 from PySide6.QtCore import QMargins, Qt
+from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QLayout, QWidget, QSpacerItem, QBoxLayout
 
 from pytide6.layout import VBoxLayout, HBoxLayout, addWidgets
@@ -8,7 +10,9 @@ from pytide6.widget_wrapper import W
 
 
 class Panel[T: QLayout](QWidget):
-    def __init__(self, layout: T, widgets: list[QWidget | W | Type[QSpacerItem]] | None = None):
+    def __init__(self, layout: T, widgets: list[QWidget | W | Type[QSpacerItem]] | None = None,
+                 background_color: PySide6.QtGui.QColor | str | PySide6.QtGui.QRgba64 | None = None,
+                 name: str | None = None):
         super().__init__()
         self.setLayout(layout)
 
@@ -19,6 +23,12 @@ class Panel[T: QLayout](QWidget):
                 else:
                     layout.addWidget(w)
 
+        if background_color is not None:
+            self.setBackgroundColor(background_color)
+
+        if name is not None:
+            self.setObjectName(name)
+
     def addWidget(self, widget: QWidget) -> "Panel":
         self.layout().addWidget(widget)
         return self
@@ -26,6 +36,12 @@ class Panel[T: QLayout](QWidget):
     @override
     def layout(self) -> T:
         return super().layout()
+
+    def setBackgroundColor(self, color: PySide6.QtGui.QColor | str | PySide6.QtGui.QRgba64) -> None:
+        palette = QPalette()
+        palette.setColor(QPalette.ColorRole.Window, color)
+        self.setAutoFillBackground(True)
+        self.setPalette(palette)
 
 
 class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
@@ -79,10 +95,13 @@ class VBoxPanel(QBoxLayoutPanelRoot[VBoxLayout]):
             spacing: int | None = None,
             margins: QMargins | tuple[int, int, int, int] | int | None = None,
             sizeConstraint: QLayout.SizeConstraint | None = None,
-            enabled: bool | None = None, ):
+            enabled: bool | None = None,
+            background_color: PySide6.QtGui.QColor | str | PySide6.QtGui.QRgba64 | None = None,
+            name: str | None = None,
+    ):
         super().__init__(VBoxLayout(
-            widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
-        ))
+            widgets=widgets, spacing=spacing, margins=margins, sizeConstraint=sizeConstraint, enabled=enabled
+        ), background_color=background_color, name=name)
 
 
 class HBoxPanel(QBoxLayoutPanelRoot[HBoxLayout]):
@@ -93,7 +112,10 @@ class HBoxPanel(QBoxLayoutPanelRoot[HBoxLayout]):
             spacing: int | None = None,
             margins: QMargins | tuple[int, int, int, int] | int | None = None,
             sizeConstraint: QLayout.SizeConstraint | None = None,
-            enabled: bool | None = None, ):
+            enabled: bool | None = None,
+            background_color: PySide6.QtGui.QColor | str | PySide6.QtGui.QRgba64 | None = None,
+            name: str | None = None,
+    ):
         super().__init__(HBoxLayout(
-            widgets = widgets, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
-        ))
+            widgets=widgets, spacing=spacing, margins=margins, sizeConstraint=sizeConstraint, enabled=enabled
+        ), background_color=background_color, name=name)
