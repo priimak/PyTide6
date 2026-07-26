@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import Self
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QDoubleValidator, QValidator
+from PySide6.QtGui import QDoubleValidator, QValidator, QKeyEvent
 from PySide6.QtWidgets import QLabel, QLineEdit
 
 from pytide6.layout import HBoxLayout
@@ -50,7 +50,7 @@ class FloatTextInput(LineTextInput):
             on_text_change: Callable[[str], None] | None = None,
             min_width: int | None = None):
         super().__init__(
-            label, text, on_text_change = on_text_change, min_width = min_width, validator = QDoubleValidator()
+            label, text, on_text_change=on_text_change, min_width=min_width, validator=QDoubleValidator()
         )
 
 
@@ -64,7 +64,8 @@ class LineEdit(QLineEdit):
             max_width: int | None = None,
             validator: QValidator | None = None,
             tooltip: str | None = None,
-            alignment: Qt.AlignmentFlag | None = None
+            alignment: Qt.AlignmentFlag | None = None,
+            on_key_enter: Callable[[str], None] = None
     ):
         super().__init__(text)
 
@@ -85,6 +86,16 @@ class LineEdit(QLineEdit):
 
         if alignment is not None:
             self.setAlignment(alignment)
+
+        self.__on_key_enter = on_key_enter
+        if self.__on_key_enter is not None:
+            self.keyPressEvent = self.__altKeyPressEvent
+
+    def __altKeyPressEvent(self, event: QKeyEvent):
+        if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
+            self.__on_key_enter(self.text())
+        else:
+            super().keyPressEvent(event)
 
     def withAlignment(self, flag: Qt.AlignmentFlag) -> Self:
         self.setAlignment(flag)
