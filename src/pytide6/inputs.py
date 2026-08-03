@@ -3,7 +3,7 @@ from typing import Self
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QDoubleValidator, QValidator, QKeyEvent
-from PySide6.QtWidgets import QLabel, QLineEdit
+from PySide6.QtWidgets import QLabel, QLineEdit, QStyle
 
 from pytide6.layout import HBoxLayout
 from pytide6.panel_widget import Panel
@@ -65,7 +65,8 @@ class LineEdit(QLineEdit):
             validator: QValidator | None = None,
             tooltip: str | None = None,
             alignment: Qt.AlignmentFlag | None = None,
-            on_key_enter: Callable[[str], None] = None
+            on_key_enter: Callable[[str], None] | None = None,
+            with_fixed_width_for_text: str | None = None
     ):
         super().__init__(text)
 
@@ -90,6 +91,13 @@ class LineEdit(QLineEdit):
         self.__on_key_enter = on_key_enter
         if self.__on_key_enter is not None:
             self.keyPressEvent = self.__altKeyPressEvent
+
+        if with_fixed_width_for_text is not None:
+            char_width = self.fontMetrics().horizontalAdvance(with_fixed_width_for_text)
+            frame_width = self.style().pixelMetric(QStyle.PixelMetric.PM_DefaultFrameWidth, None, self)
+            total_width = char_width + (frame_width * 4) + 6
+            self.setFixedWidth(total_width)
+
 
     def __altKeyPressEvent(self, event: QKeyEvent):
         if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
