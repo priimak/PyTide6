@@ -79,7 +79,14 @@ def addWidgets(
                 addWidgets(layout, widget)
 
 
-class VBoxLayout(QVBoxLayout):
+class WithAddWidgets(QBoxLayout):
+    def addWidgets(
+        self, widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None
+    ) -> None:
+        addWidgets(self, widgets)
+
+
+class VBoxLayout(QVBoxLayout, WithAddWidgets):
     def __init__(self,
                  widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None,
                  *,
@@ -92,10 +99,10 @@ class VBoxLayout(QVBoxLayout):
         Layout(
             self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         )
-        addWidgets(self, widgets)
+        self.addWidgets(widgets)
 
 
-class HBoxLayout(QHBoxLayout):
+class HBoxLayout(QHBoxLayout, WithAddWidgets):
     def __init__(self,
                  widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None,
                  *,
@@ -108,4 +115,4 @@ class HBoxLayout(QHBoxLayout):
         Layout(
             self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
         )
-        addWidgets(self, widgets)
+        self.addWidgets(widgets)
