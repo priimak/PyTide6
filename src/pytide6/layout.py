@@ -79,7 +79,7 @@ def addWidgets(
                 addWidgets(layout, widget)
 
 
-class WithAddWidgets(QBoxLayout):
+class WithAddWidgets:
     def addWidgets(
         self, widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None
     ) -> None:
