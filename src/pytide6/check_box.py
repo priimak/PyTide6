@@ -9,9 +9,11 @@ class CheckBox(QCheckBox):
                  parent=None,
                  *,
                  checked: bool = False,
-                 on_change: Callable[[bool], None] = lambda _: None):
-        super().__init__(text, parent)
+                 on_change: Callable[[bool], None] = lambda _: None,
+                 enabled: bool = True):
+        super().__init__("" if text is None else text, parent)
         self.__on_change = on_change
         self.setChecked(checked)
+        self.setEnabled(enabled)
 
         self.toggled.connect(on_change)
