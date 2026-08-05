@@ -2,18 +2,22 @@ from collections.abc import Callable
 
 from PySide6.QtGui import QFocusEvent
 from PySide6.QtWidgets import QComboBox
+from sprats.collections import Variable
 
 
-class ComboBox(QComboBox):
-    def __init__(self,
-                 parent=None,
-                 *,
-                 min_width: int | None = None,
-                 items: list[str] | None = None,
-                 current_selection: int | str | None = None,
-                 on_text_change: Callable[[str], None] | None = None,
-                 on_focus: Callable[[QFocusEvent], None] = lambda _: None) -> None:
-        super(ComboBox, self).__init__(parent)
+class ComboBox[T](QComboBox):
+    def __init__(
+        self,
+        parent=None,
+        *,
+        min_width: int | None = None,
+        items: list[str] | None = None,
+        current_selection: int | str | Variable[T] | None = None,
+        on_text_change: Callable[[str], None] | None = None,
+        on_focus: Callable[[QFocusEvent], None] = lambda _: None,
+        reactive_variable: Variable[T] | None = None,
+    ) -> None:
+        super().__init__(parent)
 
         if min_width is not None:
             self.setMinimumWidth(min_width)
@@ -26,6 +30,15 @@ class ComboBox(QComboBox):
                 self.setCurrentText(current_selection)
             case int():
                 self.setCurrentIndex(current_selection)
+            case Variable():
+                self.setCurrentText(f"{current_selection.value}")
+
+        if reactive_variable is not None:
+            self.currentTextChanged.connect(reactive_variable.set_from_str)
+            if current_selection is None:
+                self.setCurrentText(f"{reactive_variable.value}")
+            if items is None and reactive_variable.valid_values is not None:
+                self.addItems([f"{v}" for v in reactive_variable.valid_values])
 
         self.on_focus = on_focus
 
