@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import Self
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QDoubleValidator, QValidator, QKeyEvent
+from PySide6.QtGui import QDoubleValidator, QKeyEvent, QValidator
 from PySide6.QtWidgets import QLabel, QLineEdit, QStyle
 
 from pytide6.layout import HBoxLayout
@@ -10,19 +10,21 @@ from pytide6.panel_widget import Panel
 
 
 class LineTextInput(Panel[HBoxLayout]):
-    def __init__(self,
-                 label: str | None,
-                 text: str = "",
-                 *,
-                 on_text_change: Callable[[str], None] | None = None,
-                 min_width: int | None = None,
-                 validator: QValidator | None = None):
+    def __init__(
+        self,
+        label: str | None,
+        text: str = "",
+        *,
+        on_text_change: Callable[[str], None] | None = None,
+        min_width: int | None = None,
+        validator: QValidator | None = None,
+    ):
         super().__init__(HBoxLayout())
 
         if label is not None:
             self.addWidget(QLabel(label))
 
-        self._input = QLineEdit(text)
+        self._input = self.addWidget(QLineEdit(text))
 
         if on_text_change is not None:
             self._input.textChanged.connect(on_text_change)
@@ -33,8 +35,6 @@ class LineTextInput(Panel[HBoxLayout]):
         if validator is not None:
             self._input.setValidator(validator)
 
-        self.addWidget(self._input)
-
     def text(self) -> str:
         return self._input.text()
 
@@ -44,29 +44,34 @@ class LineTextInput(Panel[HBoxLayout]):
 
 class FloatTextInput(LineTextInput):
     def __init__(
-            self,
-            label: str | None,
-            text: str = "",
-            on_text_change: Callable[[str], None] | None = None,
-            min_width: int | None = None):
+        self,
+        label: str | None,
+        text: str = "",
+        on_text_change: Callable[[str], None] | None = None,
+        min_width: int | None = None,
+    ):
         super().__init__(
-            label, text, on_text_change=on_text_change, min_width=min_width, validator=QDoubleValidator()
+            label,
+            text,
+            on_text_change=on_text_change,
+            min_width=min_width,
+            validator=QDoubleValidator(),
         )
 
 
 class LineEdit(QLineEdit):
     def __init__(
-            self,
-            text: str = "",
-            *,
-            on_text_change: Callable[[str], None] | None = None,
-            min_width: int | None = None,
-            max_width: int | None = None,
-            validator: QValidator | None = None,
-            tooltip: str | None = None,
-            alignment: Qt.AlignmentFlag | None = None,
-            on_key_enter: Callable[[str], None] | None = None,
-            with_fixed_width_for_text: str | None = None
+        self,
+        text: str = "",
+        *,
+        on_text_change: Callable[[str], None] | None = None,
+        min_width: int | None = None,
+        max_width: int | None = None,
+        validator: QValidator | None = None,
+        tooltip: str | None = None,
+        alignment: Qt.AlignmentFlag | None = None,
+        on_key_enter: Callable[[str], None] | None = None,
+        with_fixed_width_for_text: str | None = None,
     ):
         super().__init__(text)
 
@@ -94,10 +99,11 @@ class LineEdit(QLineEdit):
 
         if with_fixed_width_for_text is not None:
             char_width = self.fontMetrics().horizontalAdvance(with_fixed_width_for_text)
-            frame_width = self.style().pixelMetric(QStyle.PixelMetric.PM_DefaultFrameWidth, None, self)
+            frame_width = self.style().pixelMetric(
+                QStyle.PixelMetric.PM_DefaultFrameWidth, None, self
+            )
             total_width = char_width + (frame_width * 4) + 6
             self.setFixedWidth(total_width)
-
 
     def __altKeyPressEvent(self, event: QKeyEvent):
         if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:

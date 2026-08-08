@@ -1,7 +1,13 @@
-from typing import Type
+from dataclasses import dataclass
 
 from PySide6.QtCore import QMargins
-from PySide6.QtWidgets import QLayout, QWidget, QVBoxLayout, QSpacerItem, QHBoxLayout, QBoxLayout
+from PySide6.QtWidgets import (
+    QBoxLayout,
+    QHBoxLayout,
+    QLayout,
+    QVBoxLayout,
+    QWidget,
+)
 
 from pytide6.widget_wrapper import W
 
@@ -10,14 +16,22 @@ def asList[T](src: list[T] | None) -> list[T]:
     return [] if src is None else src
 
 
+@dataclass(frozen=True)
+class Spacer:
+    stretch: int = 1
+
+
+type BoxLayoutWidget = QWidget | W | Spacer
+
+
 def Layout[T: QLayout](
-        layout_class: Type[T] | T,
-        widgets: list[QWidget] | None = None,
-        *,
-        spacing: int | None = None,
-        margins: QMargins | tuple[int, int, int, int] | int | None = None,
-        sizeConstraint: QLayout.SizeConstraint | None = None,
-        enabled: bool | None = None,
+    layout_class: type[T] | T,
+    widgets: list[QWidget] | None = None,
+    *,
+    spacing: int | None = None,
+    margins: QMargins | tuple[int, int, int, int] | int | None = None,
+    sizeConstraint: QLayout.SizeConstraint | None = None,
+    enabled: bool | None = None,
 ) -> T:
     """
     :param layout_class: Layout class to instantiate
@@ -43,7 +57,9 @@ def Layout[T: QLayout](
 
     if margins is not None:
         if isinstance(margins, tuple):
-            layout.setContentsMargins(QMargins(margins[0], margins[1], margins[2], margins[3]))
+            layout.setContentsMargins(
+                QMargins(margins[0], margins[1], margins[2], margins[3])
+            )
         elif isinstance(margins, int):
             layout.setContentsMargins(QMargins(margins, margins, margins, margins))
         else:
@@ -62,15 +78,15 @@ def Layout[T: QLayout](
 
 
 def addWidgets(
-        layout: QBoxLayout,
-        widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None
+    layout: QBoxLayout,
+    widgets: list[BoxLayoutWidget | list[BoxLayoutWidget]] | None = None,
 ) -> None:
     for widget in asList(widgets):
         match widget:
             case QWidget():
                 layout.addWidget(widget)
-            case QSpacerItem():
-                layout.addStretch(1)
+            case Spacer(stretch):
+                layout.addStretch(stretch)
             case W(widget, stretch, None):
                 layout.addWidget(widget, stretch)
             case W(widget, stretch, alignment):
@@ -81,38 +97,48 @@ def addWidgets(
 
 class WithAddWidgets:
     def addWidgets(
-        self, widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None
+        self, widgets: list[BoxLayoutWidget | list[BoxLayoutWidget]] | None
     ) -> None:
         addWidgets(self, widgets)
 
 
 class VBoxLayout(QVBoxLayout, WithAddWidgets):
-    def __init__(self,
-                 widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None,
-                 *,
-                 spacing: int | None = None,
-                 margins: QMargins | tuple[int, int, int, int] | int | None = None,
-                 sizeConstraint: QLayout.SizeConstraint | None = None,
-                 enabled: bool | None = None,
-                 ):
+    def __init__(
+        self,
+        widgets: list[BoxLayoutWidget | list[BoxLayoutWidget]] | None = None,
+        *,
+        spacing: int | None = None,
+        margins: QMargins | tuple[int, int, int, int] | int | None = None,
+        sizeConstraint: QLayout.SizeConstraint | None = None,
+        enabled: bool | None = None,
+    ):
         super().__init__()
         Layout(
-            self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
+            self,
+            spacing=spacing,
+            margins=margins,
+            sizeConstraint=sizeConstraint,
+            enabled=enabled,
         )
         self.addWidgets(widgets)
 
 
 class HBoxLayout(QHBoxLayout, WithAddWidgets):
-    def __init__(self,
-                 widgets: list[QWidget | W | Type[QSpacerItem] | list[QWidget | W | Type[QSpacerItem]]] | None = None,
-                 *,
-                 spacing: int | None = None,
-                 margins: QMargins | tuple[int, int, int, int] | int | None = None,
-                 sizeConstraint: QLayout.SizeConstraint | None = None,
-                 enabled: bool | None = None,
-                 ):
+    def __init__(
+        self,
+        widgets: list[BoxLayoutWidget | list[BoxLayoutWidget]] | None = None,
+        *,
+        spacing: int | None = None,
+        margins: QMargins | tuple[int, int, int, int] | int | None = None,
+        sizeConstraint: QLayout.SizeConstraint | None = None,
+        enabled: bool | None = None,
+    ):
         super().__init__()
         Layout(
-            self, spacing = spacing, margins = margins, sizeConstraint = sizeConstraint, enabled = enabled
+            self,
+            spacing=spacing,
+            margins=margins,
+            sizeConstraint=sizeConstraint,
+            enabled=enabled,
         )
         self.addWidgets(widgets)
