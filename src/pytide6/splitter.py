@@ -6,6 +6,7 @@ class Splitter(QSplitter):
     def __init__(
         self,
         orientation: Qt.Orientation,
+        *,
         parent: QWidget | None = None,
         opaqueResize: bool | None = None,
         handleWidth: int | None = None,
@@ -15,10 +16,16 @@ class Splitter(QSplitter):
         super().__init__(
             orientation,
             parent=parent,
-            opaqueResize=opaqueResize,
-            handleWidth=handleWidth,
-            childrenCollapsible=childrenCollapsible,
         )
+
+        if opaqueResize is not None:
+            self.setOpaqueResize(opaqueResize)
+
+        if handleWidth is not None:
+            self.setHandleWidth(handleWidth)
+
+        if childrenCollapsible is not None:
+            self.setChildrenCollapsible(childrenCollapsible)
 
         if widgets is not None:
             for widget in widgets:
