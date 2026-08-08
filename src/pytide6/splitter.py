@@ -12,6 +12,7 @@ class Splitter(QSplitter):
         handleWidth: int | None = None,
         childrenCollapsible: bool | None = None,
         widgets: list[QWidget] | None = None,
+        stretchFactors: list[tuple[int, int]] | None = None,
         margins: QMargins | tuple[int, int, int, int] | int | None = None,
     ):
         super().__init__(
@@ -41,3 +42,7 @@ class Splitter(QSplitter):
         if widgets is not None:
             for widget in widgets:
                 self.addWidget(widget)
+
+        if stretchFactors is not None:
+            for index, stretch in stretchFactors:
+                self.setStretchFactor(index, stretch)
