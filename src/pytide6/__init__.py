@@ -11,3 +11,4 @@ from .panel_widget import Panel, HBoxPanel, VBoxPanel
 from .recenetly_opened_files import init_last_opened_menu, update_last_opened_files_menu
 from .widget_wrapper import W
 from .windows import MainWindow
+from .splitter import Splitter
