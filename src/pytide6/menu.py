@@ -16,7 +16,7 @@ class Menu(QMenu):
 
     def __init__(
         self,
-        title: str,
+        title: str | None = None,
         *,
         parent: QWidget | None = None,
         tearOffEnabled: bool | None = None,
