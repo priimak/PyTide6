@@ -35,10 +35,15 @@ class ComboBox[T](QComboBox):
 
         if reactive_variable is not None:
             self.currentTextChanged.connect(reactive_variable.set_from_str)
+            reactive_variable.register_value_change_callback(
+                lambda v: self.setCurrentText(reactive_variable.serializer(v))
+            )
             if current_selection is None:
                 self.setCurrentText(f"{reactive_variable.value}")
             if items is None and reactive_variable.valid_values is not None:
-                self.addItems([f"{v}" for v in reactive_variable.valid_values])
+                # below calling reactive_variable.valid_values_str() will always return non-null list
+                # noinspection bad-argument-type
+                self.addItems(reactive_variable.valid_values_str())
 
         self.on_focus = on_focus
 
