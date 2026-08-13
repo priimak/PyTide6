@@ -25,6 +25,31 @@ class LineEdit(QLineEdit):
         with_fixed_width_for_text: str | None = None,
         reactive_variable: Variable[str] | None = None,
     ):
+        """
+        Enhancement class over `QLineEdit` in that many of common properties can be set directly in the constructor.
+        With the exception of method `LineEdit::setText(...)` (see relevant documentation for this method) this class
+        behaves exactly as QLineEdit.
+
+        :param text: text to be set as content of LineEdit.
+        :param on_text_change: callback to be called when text changes.
+        :param min_width: widget minimum width in pixes.
+        :param max_width: widget maximum width in pixes.
+        :param validator: validator for values of line edit. The line edit's `returnPressed()` and `editingFinished()`
+            signals will only be emitted if `validator` validates the line edit's content as Acceptable. The user may
+            change the content to any intermediate value during editing, but will be prevented from editing the text
+            to a value that v validates as Invalid. This allows you to constrain the text that will be stored when
+            editing is done while leaving users with enough freedom to edit the text from one valid state to another.
+            To remove the current input validator, pass nullptr. The default setting is to have no input
+            validator (any input is accepted up to maxLength()).
+        :param tooltip: widget's tooltip.
+        :param alignment: alignment of the line edit.
+        :param on_key_enter: optional callback to be called keyboard key `Enter` is pressed.
+        :param with_fixed_width_for_text: if provided then with width in pixels if computed for this text and a
+            current font and both minimum and maximum width in pixels for LineEdit widget is set to this value.
+        :param reactive_variable: if provided, then content of `text` in constructor is ignored. Also
+            ignored `on_text_change` argument. Text of the LineEdit set to the content of `reactive_variable` and
+            bidirectional callbacks are established between instance of this `LineEdit` and `reactive_variable`.
+        """
         super().__init__(text)
 
         if on_text_change is not None:
@@ -61,6 +86,17 @@ class LineEdit(QLineEdit):
             self.setText(reactive_variable.value)
             reactive_variable.register_value_change_callback(self.setText)
             self.textChanged.connect(lambda txt: reactive_variable.set_value(txt))
+
+    def setText(self, text: str | None) -> None:
+        """
+        Sets `text` LineEdit content. This function differs from default one present in `QLineText` in that it is
+        a NO-OP if `text` is `not None` and it does not differ from content currently held in `LineText`. Otherwise,
+        `text` is set to be a content of `LineEdit` and it clears the selection, clears the undo/redo history, moves
+        the cursor to the end of the line, and resets the modified property to `False`. When set `text` is truncated to
+        `LineEdit::maxLength()`.
+        """
+        if text is None or self.text() != text:
+            super().setText(text)
 
     def __altKeyPressEvent(self, event: QKeyEvent):
         if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
