@@ -31,9 +31,7 @@ class Splitter(QSplitter):
 
         if margins is not None:
             if isinstance(margins, tuple):
-                self.setContentsMargins(
-                    QMargins(margins[0], margins[1], margins[2], margins[3])
-                )
+                self.setContentsMargins(QMargins(margins[0], margins[1], margins[2], margins[3]))
             elif isinstance(margins, int):
                 self.setContentsMargins(QMargins(margins, margins, margins, margins))
             else:

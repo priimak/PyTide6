@@ -76,9 +76,7 @@ class LineEdit(QLineEdit):
 
         if with_fixed_width_for_text is not None:
             char_width = self.fontMetrics().horizontalAdvance(with_fixed_width_for_text)
-            frame_width = self.style().pixelMetric(
-                QStyle.PixelMetric.PM_DefaultFrameWidth, None, self
-            )
+            frame_width = self.style().pixelMetric(QStyle.PixelMetric.PM_DefaultFrameWidth, None, self)
             total_width = char_width + (frame_width * 4) + 6
             self.setFixedWidth(total_width)
 

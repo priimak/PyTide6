@@ -57,9 +57,7 @@ def Layout[T: QLayout](
 
     if margins is not None:
         if isinstance(margins, tuple):
-            layout.setContentsMargins(
-                QMargins(margins[0], margins[1], margins[2], margins[3])
-            )
+            layout.setContentsMargins(QMargins(margins[0], margins[1], margins[2], margins[3]))
         elif isinstance(margins, int):
             layout.setContentsMargins(QMargins(margins, margins, margins, margins))
         else:
@@ -96,9 +94,7 @@ def addWidgets(
 
 
 class WithAddWidgets:
-    def addWidgets(
-        self, widgets: list[BoxLayoutWidget | list[BoxLayoutWidget]] | None
-    ) -> None:
+    def addWidgets(self, widgets: list[BoxLayoutWidget | list[BoxLayoutWidget]] | None) -> None:
         addWidgets(self, widgets)
 
 

@@ -10,4 +10,4 @@ class Label(QLabel):
 
 class RichTextLabel(Label):
     def __init__(self, text: str):
-        super().__init__(text, textFormat = Qt.TextFormat.RichText)
+        super().__init__(text, textFormat=Qt.TextFormat.RichText)

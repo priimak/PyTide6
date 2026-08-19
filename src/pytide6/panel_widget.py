@@ -52,9 +52,7 @@ class QBoxLayoutPanelRoot[T: QBoxLayout](Panel[T]):
 
     withWidgets = addWidgets
 
-    def addWidget[X: QWidget](
-        self, widget: X, stretch: int = 0, alignment: Qt.AlignmentFlag | None = None
-    ) -> X:
+    def addWidget[X: QWidget](self, widget: X, stretch: int = 0, alignment: Qt.AlignmentFlag | None = None) -> X:
         """
         Adds widget to the end of this box layout, with a stretch factor of `stretch` and alignment `alignment`.
         The stretch factor applies only in the direction of the `QBoxLayout`, and is relative to the other boxes
@@ -89,10 +87,7 @@ class VBoxPanel(QBoxLayoutPanelRoot[VBoxLayout]):
         margins: QMargins | tuple[int, int, int, int] | int | None = None,
         sizeConstraint: QLayout.SizeConstraint | None = None,
         enabled: bool | None = None,
-        background_color: PySide6.QtGui.QColor
-        | str
-        | PySide6.QtGui.QRgba64
-        | None = None,
+        background_color: PySide6.QtGui.QColor | str | PySide6.QtGui.QRgba64 | None = None,
         name: str | None = None,
     ):
         super().__init__(
@@ -117,10 +112,7 @@ class HBoxPanel(QBoxLayoutPanelRoot[HBoxLayout]):
         margins: QMargins | tuple[int, int, int, int] | int | None = None,
         sizeConstraint: QLayout.SizeConstraint | None = None,
         enabled: bool | None = None,
-        background_color: PySide6.QtGui.QColor
-        | str
-        | PySide6.QtGui.QRgba64
-        | None = None,
+        background_color: PySide6.QtGui.QColor | str | PySide6.QtGui.QRgba64 | None = None,
         name: str | None = None,
     ):
         super().__init__(

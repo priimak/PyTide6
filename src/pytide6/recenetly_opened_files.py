@@ -7,12 +7,11 @@ from pytide6.open_file_protocol import FileOpener
 
 
 def init_last_opened_menu(
-        app_persistence: AppPersistence,
-        recently_opened_menu: QMenu,
-        file_opener: FileOpener
+    app_persistence: AppPersistence, recently_opened_menu: QMenu, file_opener: FileOpener
 ) -> None:
     recently_opened_menu.clear()
     for file in app_persistence.state.get_value("last_opened_files", []):
+
         def f(file_name: str):
             return lambda: file_opener.open_file(f"{file_name}")
 
@@ -20,10 +19,7 @@ def init_last_opened_menu(
 
 
 def update_last_opened_files_menu(
-        app_persistence: AppPersistence,
-        recently_opened_menu: QMenu,
-        file_name: str,
-        file_opener: FileOpener
+    app_persistence: AppPersistence, recently_opened_menu: QMenu, file_name: str, file_opener: FileOpener
 ) -> None:
     last_opened_files = app_persistence.state.get_value("last_opened_files", [])
     fname = f"{Path(file_name).absolute()}"
