@@ -23,6 +23,7 @@ class LineEdit(QLineEdit):
         alignment: Qt.AlignmentFlag | None = None,
         on_key_enter: Callable[[str], None] | None = None,
         with_fixed_width_for_text: str | None = None,
+        with_min_width_for_text: str | None = None,
         reactive_variable: Variable[str] | None = None,
     ):
         """
@@ -46,6 +47,8 @@ class LineEdit(QLineEdit):
         :param on_key_enter: optional callback to be called keyboard key `Enter` is pressed.
         :param with_fixed_width_for_text: if provided then with width in pixels if computed for this text and a
             current font and both minimum and maximum width in pixels for LineEdit widget is set to this value.
+        :param with_min_width_for_text: if provided then with width in pixels if computed for this text and a
+            current font and minimum width in pixels for LineEdit widget is set to this value.
         :param reactive_variable: if provided, then content of `text` in constructor is ignored. Also
             ignored `on_text_change` argument. Text of the LineEdit set to the content of `reactive_variable` and
             bidirectional callbacks are established between instance of this `LineEdit` and `reactive_variable`.
@@ -79,6 +82,12 @@ class LineEdit(QLineEdit):
             frame_width = self.style().pixelMetric(QStyle.PixelMetric.PM_DefaultFrameWidth, None, self)
             total_width = char_width + (frame_width * 4) + 6
             self.setFixedWidth(total_width)
+
+        if with_min_width_for_text is not None:
+            char_width = self.fontMetrics().horizontalAdvance(with_min_width_for_text)
+            frame_width = self.style().pixelMetric(QStyle.PixelMetric.PM_DefaultFrameWidth, None, self)
+            total_width = char_width + (frame_width * 4) + 6
+            self.setMinimumWidth(total_width)
 
         if reactive_variable is not None:
             self.setText(reactive_variable.value)
