@@ -24,7 +24,7 @@ class LineEdit(QLineEdit):
         on_key_enter: Callable[[str], None] | None = None,
         with_fixed_width_for_text: str | None = None,
         with_min_width_for_text: str | None = None,
-        reactive_variable: Variable[str] | None = None,
+        reactive_variable: Variable | None = None,
     ):
         """
         Enhancement class over `QLineEdit` in that many of common properties can be set directly in the constructor.
@@ -90,9 +90,9 @@ class LineEdit(QLineEdit):
             self.setMinimumWidth(total_width)
 
         if reactive_variable is not None:
-            self.setText(reactive_variable.value)
-            reactive_variable.register_value_change_callback(self.setText)
-            self.textChanged.connect(lambda txt: reactive_variable.set_value(txt))
+            self.setText(reactive_variable.str_value())
+            reactive_variable.register_value_change_callback(lambda v: self.setText(reactive_variable.serializer(v)))
+            self.textChanged.connect(reactive_variable.set_from_str)
 
     def setText(self, text: str | None) -> None:
         """
