@@ -66,7 +66,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "pyside6", specifier = ">=6.9" },
-    { name = "sprats", git = "https://github.com/priimak/sprats.git?rev=v0.7.0" },
+    { name = "sprats", git = "https://github.com/priimak/sprats.git?rev=v0.8.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -111,5 +111,5 @@ wheels = [
 
 [[package]]
 name = "sprats"
-version = "0.7.0.post0+git.2010799e.dirty"
-source = { git = "https://github.com/priimak/sprats.git?rev=v0.7.0#2010799ebe4601fc4f164937910565d9a55f2868" }
+version = "0.8.0.post0+git.22816d17.dirty"
+source = { git = "https://github.com/priimak/sprats.git?rev=v0.8.0#22816d17999e1cb701796bf32f70c605d6cba302" }
