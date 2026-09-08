@@ -6,7 +6,7 @@ dynamic = ["version"]
 requires-python = ">=3.13"
 dependencies = [
     "pyside6>=6.9",
-    "sprats @ git+https://github.com/priimak/sprats.git@v0.6.1"
+    "sprats @ git+https://github.com/priimak/sprats.git@v0.7.0"
 ]
 
 [build-system]
@@ -29,4 +29,9 @@ select = [
     "W", # pycodestyle
     "B", # flake8-bugbear
     "I", # isort
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.6",
 ]
