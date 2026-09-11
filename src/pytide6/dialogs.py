@@ -22,17 +22,11 @@ class Dialog(QDialog):
 
 class Prompt[T](Dialog):
     def __init__(
-        self,
-        parent,
-        *,
-        windowTitle: str | None = None,
-        modal: bool = True,
-        css: str | None = None,
-        default_value: T | None = None,
+        self, parent, *, default_value: T, windowTitle: str | None = None, modal: bool = True, css: str | None = None
     ):
         super().__init__(parent, windowTitle=windowTitle, modal=modal, css=css)
 
-        self.retval: T | None = default_value
+        self.retval: T = default_value
 
-    def prompt(self) -> T | None:
+    def prompt(self) -> T:
         return self.execute().retval
