@@ -1,3 +1,5 @@
+from typing import Self
+
 from PySide6.QtWidgets import QDialog
 
 
@@ -12,3 +14,7 @@ class Dialog(QDialog):
 
         if css is not None:
             self.setStyleSheet(css)
+
+    def execute(self) -> Self:
+        self.exec()
+        return self
