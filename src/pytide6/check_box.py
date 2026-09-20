@@ -21,12 +21,18 @@ class CheckBox(QCheckBox):
         self.setChecked(checked)
         self.setEnabled(enabled)
 
-        self.toggled.connect(on_change)
+        self.toggle_callbacks: list[Callable[[bool], None]] = [on_change]
+
+        def handle_toggle(checked: bool):
+            for callback in self.toggle_callbacks:
+                callback(checked)
+
+        self.toggled.connect(handle_toggle)
 
         if reactive_variable is not None:
             self.setChecked(reactive_variable.value)
             reactive_variable.register_value_change_callback(self.setChecked)
-            self.toggled.connect(reactive_variable.set_value)
+            self.toggle_callbacks.append(reactive_variable.set_value)
 
         if css is not None:
             self.setStyleSheet(css)
