@@ -66,29 +66,29 @@ class ComboBox[T](QComboBox):
         if min_width is not None:
             self.setMinimumWidth(min_width)
 
-        self.valid_items = (
+        valid_items = (
             items if (items is not None or reactive_variable is None) else reactive_variable.valid_values_str()
         )
 
-        if self.valid_items is None:
+        if valid_items is None:
             raise ValueError("ComboBox requires either items= argument of valid values in the reactive_variable=")
 
-        self.addItems(self.valid_items)
+        self.addItems(valid_items)
 
         match current_selection:
             case str():
-                if current_selection not in self.valid_items:
+                if current_selection not in valid_items:
                     raise ValueError(
-                        f'Current selection "{current_selection}" is not in a list of valid values {self.valid_items}'
+                        f'Current selection "{current_selection}" is not in a list of valid values {valid_items}'
                     )
                 self.setCurrentText(current_selection)
             case int():
                 self.setCurrentIndex(current_selection)
             case Variable():
                 current_selection = current_selection.str_value()
-                if current_selection not in self.valid_items:
+                if current_selection not in valid_items:
                     raise ValueError(
-                        f'Current selection "{current_selection}" is not in a list of valid values {self.valid_items}'
+                        f'Current selection "{current_selection}" is not in a list of valid values {valid_items}'
                     )
                 self.setCurrentText(current_selection)
 
@@ -96,19 +96,15 @@ class ComboBox[T](QComboBox):
             reactive_variable.register_value_change_callback(
                 lambda v: self.setCurrentText(reactive_variable.serializer(v))
             )
-            if (
-                reactive_variable.valid_values_str() is not None
-                and self.valid_items != reactive_variable.valid_values_str()
-            ):
+            if reactive_variable.valid_values_str() is not None and valid_items != reactive_variable.valid_values_str():
                 raise ValueError("Possible values set is not compatible with valid_values in the reactive_variable")
             elif current_selection is None:
                 reactive_variable_value = reactive_variable.str_value()
-                if reactive_variable_value in self.valid_items:
+                if reactive_variable_value in valid_items:
                     self.setCurrentText(reactive_variable_value)
                 else:
                     raise ValueError(
-                        f'Current selection "{reactive_variable_value}" is not '
-                        f"in a list of valid values {self.valid_items}"
+                        f'Current selection "{reactive_variable_value}" is not in a list of valid values {valid_items}'
                     )
 
             if self.currentText() != reactive_variable.str_value():
@@ -119,7 +115,7 @@ class ComboBox[T](QComboBox):
         if (
             current_selection is not None
             and isinstance(current_selection, int)
-            and (current_selection < 0 or current_selection >= len(self.valid_items))
+            and (current_selection < 0 or current_selection >= len(valid_items))
         ):
             raise ValueError("Invalid current selection index")
 
@@ -131,13 +127,18 @@ class ComboBox[T](QComboBox):
 
         self.currentTextChanged.connect(handle_text_change)
 
+    @property
+    def textItems(self) -> list[str]:
+        return [self.itemText(i) for i in range(self.count())]
+
     @override
     def setCurrentText(self, text: str, /) -> None:
-        if text in self.valid_items:
+        if text in self.textItems:
             super().setCurrentText(text)
         else:
-            raise ValueError(f'Current selection "{text}" is not in a list of valid values {self.valid_items}')
+            raise ValueError(f'Current selection "{text}" is not in a list of valid values {self.textItems}')
 
+    @override
     def focusInEvent(self, e):
         super().focusInEvent(e)
         self.on_focus(e)

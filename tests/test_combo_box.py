@@ -51,6 +51,17 @@ def test_combo_box_three_current_selection_types(qtbot):
     assert combo_box.currentText() == "11"
 
 
+def test_items_change(qtbot):
+    combo_box = ComboBox(items=[])
+    combo_box.setCurrentIndex(0)
+
+    with pytest.raises(ValueError, match=re.escape('Current selection "" is not in a list of valid values []')):
+        combo_box.setCurrentText("")
+
+    combo_box.addItems(["A", "B"])
+    assert combo_box.textItems == ["A", "B"]
+
+
 def test_combo_box_with_reactive_variable(qtbot):
     variable = Variable[str]("A", clazz=str)
     combo_box = ComboBox(
@@ -80,7 +91,7 @@ def test_combo_box_with_reactive_variable(qtbot):
     combo_box = ComboBox(
         reactive_variable=variable,
     )
-    assert combo_box.valid_items == ["A", "B", "C", "D"]
+    assert combo_box.textItems == ["A", "B", "C", "D"]
     assert combo_box.currentText() == "B"
     qtbot.addWidget(combo_box)
     qtbot.keyClicks(combo_box, "D")
