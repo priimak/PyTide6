@@ -15,7 +15,7 @@ class LineEdit(QLineEdit):
         self,
         text: str = "",
         *,
-        on_text_change: Callable[[str], None] | None = None,
+        on_text_change: Callable[[str], None] = lambda _: None,
         min_width: int | None = None,
         max_width: int | None = None,
         validator: QValidator | None = None,
@@ -28,8 +28,8 @@ class LineEdit(QLineEdit):
     ):
         """
         Enhancement class over `QLineEdit` in that many of common properties can be set directly in the constructor.
-        With the exception of method `LineEdit::setText(...)` (see relevant documentation for this method) this class
-        behaves exactly as QLineEdit.
+        Except method `LineEdit::setText(...)` (see relevant documentation for this method) this class behaves
+        exactly as QLineEdit.
 
         :param text: text to be set as content of LineEdit.
         :param on_text_change: callback to be called when text changes.
@@ -42,7 +42,7 @@ class LineEdit(QLineEdit):
             editing is done while leaving users with enough freedom to edit the text from one valid state to another.
             To remove the current input validator, pass nullptr. The default setting is to have no input
             validator (any input is accepted up to maxLength()).
-        :param tooltip: widget's tooltip.
+        :param tooltip: widgets tooltip.
         :param alignment: alignment of the line edit.
         :param on_key_enter: optional callback to be called keyboard key `Enter` is pressed.
         :param with_fixed_width_for_text: if provided then with width in pixels if computed for this text and a
@@ -55,8 +55,7 @@ class LineEdit(QLineEdit):
         """
         super().__init__(text)
 
-        if on_text_change is not None:
-            self.textChanged.connect(on_text_change)
+        self.text_changed_callbacks: list[Callable[[str], None]] = [on_text_change]
 
         if min_width is not None:
             self.setMinimumWidth(min_width)
@@ -92,7 +91,13 @@ class LineEdit(QLineEdit):
         if reactive_variable is not None:
             self.setText(reactive_variable.str_value())
             reactive_variable.register_value_change_callback(lambda v: self.setText(reactive_variable.serializer(v)))
-            self.textChanged.connect(reactive_variable.set_from_str)
+            self.text_changed_callbacks.append(reactive_variable.set_from_str)
+
+        def handle_text_change(text: str):
+            for callback in self.text_changed_callbacks:
+                callback(text)
+
+        self.textChanged.connect(handle_text_change)
 
     def setText(self, text: str | None) -> None:
         """
@@ -142,7 +147,7 @@ class LineTextInput(Panel[HBoxLayout]):
         label: str | None,
         text: str = "",
         *,
-        on_text_change: Callable[[str], None] | None = None,
+        on_text_change: Callable[[str], None] = lambda _: None,
         min_width: int | None = None,
         max_width: int | None = None,
         validator: QValidator | None = None,
@@ -185,7 +190,7 @@ class FloatTextInput(LineTextInput):
         label: str | None,
         text: str = "",
         *,
-        on_text_change: Callable[[str], None] | None = None,
+        on_text_change: Callable[[str], None] = lambda _: None,
         min_width: int | None = None,
         max_width: int | None = None,
         tooltip: str | None = None,

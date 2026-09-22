@@ -6,7 +6,7 @@ dynamic = ["version"]
 requires-python = ">=3.13"
 dependencies = [
     "pyside6>=6.9",
-    "sprats @ git+https://github.com/priimak/sprats.git@v0.8.1"
+    "sprats @ git+https://github.com/priimak/sprats.git@v0.8.1",
 ]
 
 [build-system]
@@ -33,5 +33,6 @@ select = [
 
 [dependency-groups]
 dev = [
+    "pytest-qt>=4.5.0",
     "ruff>=0.16.6",
 ]
