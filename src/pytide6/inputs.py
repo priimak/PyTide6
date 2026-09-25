@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from typing import Self
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QEvent, Qt
 from PySide6.QtGui import QDoubleValidator, QKeyEvent, QValidator
 from PySide6.QtWidgets import QLabel, QLineEdit, QStyle
 from sprats.collections import Variable
@@ -25,6 +25,7 @@ class LineEdit(QLineEdit):
         with_fixed_width_for_text: str | None = None,
         with_min_width_for_text: str | None = None,
         reactive_variable: Variable | None = None,
+        suppress_keys: list[int] | None = None,
     ):
         """
         Enhancement class over `QLineEdit` in that many of common properties can be set directly in the constructor.
@@ -52,6 +53,7 @@ class LineEdit(QLineEdit):
         :param reactive_variable: if provided, then content of `text` in constructor is ignored. Also
             ignored `on_text_change` argument. Text of the LineEdit set to the content of `reactive_variable` and
             bidirectional callbacks are established between instance of this `LineEdit` and `reactive_variable`.
+        :param suppress_keys: list of keys to suppress when `keyPressEvent(...)` is called.
         """
         super().__init__(text)
 
@@ -73,8 +75,7 @@ class LineEdit(QLineEdit):
             self.setAlignment(alignment)
 
         self.__on_key_enter = on_key_enter
-        if self.__on_key_enter is not None:
-            self.keyPressEvent = self.__altKeyPressEvent
+        self.__suppress_keys = [] if suppress_keys is None else suppress_keys
 
         if with_fixed_width_for_text is not None:
             char_width = self.fontMetrics().horizontalAdvance(with_fixed_width_for_text)
@@ -110,9 +111,15 @@ class LineEdit(QLineEdit):
         if text is None or self.text() != text:
             super().setText(text)
 
-    def __altKeyPressEvent(self, event: QKeyEvent):
-        if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
-            self.__on_key_enter(self.text())
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.type() == QEvent.Type.KeyPress:
+            key = event.key()
+            if key in self.__suppress_keys:
+                return
+            elif self.__on_key_enter is not None and key in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
+                self.__on_key_enter(self.text())
+            else:
+                super().keyPressEvent(event)
         else:
             super().keyPressEvent(event)
 
